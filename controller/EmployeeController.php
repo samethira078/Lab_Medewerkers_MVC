@@ -6,19 +6,24 @@ function index()
 {
     //1. Haal alle medewerkers op uit de database (via de model) en sla deze op in een variable
     $employees = getAllEmployees();
+    //echo "<pre>";
+    //print_r($employees);
+    //echo "</pre>";
     //2. Geef een view weer en geef de variable met medewerkers hieraan mee
-    render('employee/index', $employees);
+    render('employee/index', ['employees' => $employees]);
 }
 
 function create(){
-    //1. Geef een view weer waarin een formulier staat voor het aanmaken van een medewerker
-
+	render('employee/create');
 }
 
 function store(){
     //1. Maak een nieuwe medewerker aan met de data uit het formulier en sla deze op in de database
-
+	if(isset( $_POST['name']) && isset( $_POST['num'])){
+		createEmployee($_POST);
+	}
     //2. Bouw een url op en redirect hierheen
+	render('employee/store');
 
 }
 
@@ -38,8 +43,10 @@ function update(){
 
 function delete($id){
     //1. Haal een medewerker op met een specifiek id en sla deze op in een variable
-
+	$delete = deleteEmployee($id);
     //2. Geef een view weer voor het verwijderen en geef de variable met medewerker hieraan mee
+	echo $id." is verwijderd!";
+	render('employee/delete');
 
 }
 

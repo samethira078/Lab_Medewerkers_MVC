@@ -68,17 +68,64 @@ function getEmployee($id){
  }
 
 function createEmployee($data){
-    // Maak hier de code om een medewerker toe te voegen
+	try {
+		// Open de verbinding met de database
+		if(empty($data['name'] || empty( $data['num']))){
+			return;
+		}
+		$conn=openDatabaseConnection();
+		$stmt = $conn->prepare("INSERT INTO employees(`name`,`age`) VALUES(:name, :age)");
+		$stmt->bindParam(":name", $_POST['name']);
+		$stmt->bindParam(":age", $_POST['num']);
+		$stmt->execute();
+	}
+	catch(PDOException $e){
+		echo "Connection failed: " . $e->getMessage();
+	}
+	// Maak de database verbinding leeg. Dit zorgt ervoor dat het geheugen
+	// van de server opgeschoond blijft
+	$conn = null;
 
+	// Geef het resultaat terug aan de controller
  }
 
 
  function updateEmployee($data){
     // Maak hier de code om een medewerker te bewerken
+
  }
 
  function deleteEmployee($id){
     // Maak hier de code om een medewerker te verwijderen
+	 try {
+		 // Open de verbinding met de database
+		 $conn=openDatabaseConnection();
+
+		 // Zet de query klaar door midel van de prepare method. Voeg hierbij een
+		 // WHERE clause toe (WHERE id = :id. Deze vullen we later in de code
+		 $stmt = $conn->prepare("DELETE FROM `employees` WHERE id = :id");
+		 // Met bindParam kunnen we een parameter binden. Dit vult de waarde op de plaats in
+		 // We vervangen :id in de query voor het id wat de functie binnen is gekomen.
+		 $stmt->bindParam(":id", $id);
+
+		 // Voer de query uit
+		 $stmt->execute();
+
+		 // Haal alle resultaten op en maak deze op in een array
+		 // In dit geval weten we zeker dat we maar 1 medewerker op halen (de where clause),
+		 //daarom gebruiken we hier de fetch functie.
+		 $result = $stmt->fetch();
+
+	 }
+	 catch(PDOException $e){
+		 echo "Connection failed: " . $e->getMessage();
+	 }
+	 // Maak de database verbinding leeg. Dit zorgt ervoor dat het geheugen
+	 // van de server opgeschoond blijft
+	 $conn = null;
+
+	 // Geef het resultaat terug aan de controller
+	 return $result;
  }
 
 
